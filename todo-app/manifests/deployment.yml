@@ -12,7 +12,14 @@ spec:
       labels:
         app: todo-app
     spec:
+      volumes:
+        - name: todo-cache
+          persistentVolumeClaim:
+            claimName: todo-cache
       containers:
       - name: todo-app
         image: todo-app
         imagePullPolicy: Never
+        volumeMounts:
+          - name: todo-cache
+            mountPath: /var/cache
