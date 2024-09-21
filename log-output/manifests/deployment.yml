@@ -12,7 +12,19 @@ spec:
       labels:
         app: log-output
     spec:
+      volumes:
+        - name: shared-dir
+          emptyDir: {}
       containers:
       - name: log-output
         image: log-output
         imagePullPolicy: Never
+        volumeMounts:
+          - name: shared-dir
+            mountPath: /var/shared
+      - name: timestamper
+        image: log-output-timestamper
+        imagePullPolicy: Never
+        volumeMounts:
+          - name: shared-dir
+            mountPath: /var/shared
