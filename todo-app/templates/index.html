@@ -4,14 +4,45 @@
 </head>
 <body>
     <img src="/cache/random.jpg" width="600" height="600"/>
+    <script>
+        async function updateTodos() {
+            const list = document.getElementById('todo-list')
+            list.innerHTML = ''
+            const res = await fetch('/todos')
+            const todos = await res.json();
+            if (!todos) {
+                return;
+            }
+            for (const todo of todos) {
+                const el = document.createElement('LI')
+                el.textContent = todo.text
+                list.appendChild(el)
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            submitBtn = document.getElementById('newTodo')
+            submitBtn.addEventListener('click', async (event) => {
+                event.preventDefault()
+                const input = document.getElementById('todo')
+                await fetch('/todos', {
+                    method: 'POST',
+                    body: JSON.stringify({text: input.value}),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                input.value = ''
+                updateTodos()
+            })
+
+            updateTodos()
+        })
+    </script>
     <form>
         <input type="text" id="todo" name="todo" required maxlength="140" size="50">
-        <input type="submit" value="Create!" />
+        <input type="submit" id="newTodo" value="Create!" />
     </form>
-    <ul>
-        {% for todo in todos %}
-            <li>{{ todo.text }}</li>
-        {% endfor %}
-    </ul>
+    <ul id="todo-list"></ul>
 </body>
 </html>

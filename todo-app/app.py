@@ -29,9 +29,4 @@ def health():
 
 @app.get('/')
 def index(request: Request):
-    return templates.TemplateResponse(request=request, name='index.html', context={
-        'todos': [
-            {'text': 'Do this course'},
-            {'text': 'Test stuff'}
-        ]
-    })
+    return templates.TemplateResponse(request=request, name='index.html', context={})

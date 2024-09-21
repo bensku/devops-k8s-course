@@ -6,10 +6,24 @@ spec:
   rules:
   - http:
       paths:
-      - path: /
+      - path: /todos
         pathType: Prefix
         backend:
           service:
             name: todo-app
             port:
-              number: 1234
+              number: 8081
+      - path: /
+        pathType: Exact
+        backend:
+          service:
+            name: todo-app
+            port:
+              number: 8080
+      - path: /cache
+        pathType: Prefix
+        backend:
+          service:
+            name: todo-app
+            port:
+              number: 8080
