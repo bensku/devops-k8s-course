@@ -2,6 +2,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: tmp-pv-1
+  namespace: exercise-apps
 spec:
   storageClassName: tmp-pv
   capacity:
@@ -24,6 +25,7 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: tmp-pv-2
+  namespace: exercise-apps
 spec:
   storageClassName: tmp-pv
   capacity:
@@ -33,6 +35,52 @@ spec:
   - ReadWriteOnce
   local:
     path: /tmp/kube2
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - k3d-k3s-default-agent-0
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tmp-pv-3
+  namespace: todo-app
+spec:
+  storageClassName: tmp-pv
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  local:
+    path: /tmp/kube3
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - k3d-k3s-default-agent-0
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tmp-pv-4
+  namespace: todo-app
+spec:
+  storageClassName: tmp-pv
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+  - ReadWriteOnce
+  local:
+    path: /tmp/kube4
   nodeAffinity:
     required:
       nodeSelectorTerms:
