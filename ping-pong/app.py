@@ -8,4 +8,6 @@ counter = 0
 def read_root():
     global counter
     counter += 1
+    with open('/var/ping-count/count', 'w') as f:
+        f.write(str(counter))
     return f'pong {counter - 1}'

@@ -15,6 +15,9 @@ spec:
       volumes:
         - name: shared-dir
           emptyDir: {}
+        - name: ping-count
+          persistentVolumeClaim:
+            claimName: ping-count
       containers:
       - name: log-output
         image: log-output
@@ -22,6 +25,8 @@ spec:
         volumeMounts:
           - name: shared-dir
             mountPath: /var/shared
+          - name: ping-count
+            mountPath: /var/ping-count
       - name: timestamper
         image: log-output-timestamper
         imagePullPolicy: Never
