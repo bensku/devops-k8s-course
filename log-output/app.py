@@ -2,6 +2,8 @@ import datetime
 import threading
 import time
 import uuid
+
+import requests
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -14,11 +16,8 @@ def read_time():
         return f.read()
 
 def read_ping_count():
-    try:
-        with open('/var/ping-count/count', 'r') as f:
-            return f.read()
-    except FileNotFoundError:
-        return '0'
+    res = requests.get('http://ping-pong:1234/count')
+    return res.json()
 
 def update_status():
     while True:
