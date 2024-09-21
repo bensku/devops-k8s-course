@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: log-output-config
+  namespace: exercise-apps
+data:
+  information.txt: This comes from file!
+  MESSAGE: And this from env variable

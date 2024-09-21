@@ -19,6 +19,12 @@ spec:
         # - name: ping-count
         #   persistentVolumeClaim:
         #     claimName: ping-count
+        - name: config
+          configMap:
+            name: log-output-config
+            items:
+              - key: information.txt
+                path: information.txt
       containers:
       - name: log-output
         image: log-output
@@ -28,6 +34,14 @@ spec:
             mountPath: /var/shared
           # - name: ping-count
           #   mountPath: /var/ping-count
+          - name: config
+            mountPath: /var/config
+        env:
+          - name: MESSAGE
+            valueFrom:
+              configMapKeyRef:
+                name: log-output-config
+                key: MESSAGE
       - name: timestamper
         image: log-output-timestamper
         imagePullPolicy: Never
