@@ -4,7 +4,7 @@ metadata:
   name: todo-cache
   namespace: todo-app
 spec:
-  storageClassName: tmp-pv
+  storageClassName: standard
   accessModes:
     - ReadWriteOnce
   resources:

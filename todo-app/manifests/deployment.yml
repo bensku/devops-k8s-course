@@ -19,11 +19,17 @@ spec:
             claimName: todo-cache
       containers:
       - name: todo-app
-        image: todo-app
+        image: localhost/todo-app
         imagePullPolicy: Never
         volumeMounts:
           - name: todo-cache
             mountPath: /var/cache
       - name: todo-backend
-        image: todo-backend
+        image: localhost/todo-backend
         imagePullPolicy: Never
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: todo-db-credentials
+              key: password
