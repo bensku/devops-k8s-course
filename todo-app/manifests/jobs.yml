@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: hourly-todos
+  namespace: todo-app
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: main
+            image: curlimages/curl
+            command:
+            - /bin/sh
+            - -c
+            - 'curl --fail -XPOST -H "Content-Type: application/json" --data "{\"text\": \"Read $(curl -Ls -w %{url_effective} -o /dev/null https://en.wikipedia.org/wiki/Special:Random)\"}" http://todo-app:8081/todos'
+          restartPolicy: OnFailure
