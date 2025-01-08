@@ -19,8 +19,14 @@ spec:
       #       claimName: ping-count
       containers:
       - name: ping-pong
-        image: ping-pong
+        image: localhost/ping-pong
         imagePullPolicy: Never
         # volumeMounts:
         #   - name: ping-count
         #     mountPath: /var/ping-count
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pingpong-db-credentials
+              key: password

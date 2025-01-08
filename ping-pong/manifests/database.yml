@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pingpong-db
+  namespace: exercise-apps
+spec:
+  selector:
+    matchLabels:
+      app: pingpong-db
+  serviceName: pingpong-db
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: pingpong-db
+    spec:
+      containers:
+      - name: pingpong-db
+        image: postgres:17
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pingpong-db-credentials
+              key: password
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: standard # Using kind due to k3d issues on new computer, so this is different
+      resources:
+        requests:
+          storage: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pingpong-db-svc
+  namespace: exercise-apps
+spec:
+  ports:
+  - port: 5432
+    name: postgres
+  clusterIP: None
+  selector:
+    app: pingpong-db
