@@ -5,7 +5,7 @@ import time
 import uuid
 
 import requests
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
 
@@ -25,10 +25,13 @@ def read_ping_count():
 
 def update_status():
     while True:
-        print('file content:', information)
-        print('env variable:', f'MESSAGE={os.environ['MESSAGE']}')
-        print(read_time(), random_str, flush=True)
-        print('Pings / pongs:', read_ping_count(), flush=True)
+        try:
+            print('file content:', information)
+            print('env variable:', f'MESSAGE={os.environ['MESSAGE']}')
+            print(read_time(), random_str, flush=True)
+            print('Pings / pongs:', read_ping_count(), flush=True)
+        except Exception as e:
+            print('Error updating status', e, flush=True)
         time.sleep(5)
 
 threading.Thread(target=update_status).start()
@@ -36,3 +39,13 @@ threading.Thread(target=update_status).start()
 @app.get("/status")
 def read_root():
     return {'time': read_time(), 'status': random_str, 'pingcount': int(read_ping_count())}
+
+@app.get('/health')
+def health():
+    try:
+        read_time()
+        read_ping_count()
+        return {'status': 'green'}
+    except Exception as e:
+        print('Health check failed:', e)
+        raise HTTPException(status_code=500, detail={'status': 'red'})

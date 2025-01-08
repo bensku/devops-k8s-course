@@ -27,7 +27,7 @@ spec:
                 path: information.txt
       containers:
       - name: log-output
-        image: log-output
+        image: localhost/log-output
         imagePullPolicy: Never
         volumeMounts:
           - name: shared-dir
@@ -42,8 +42,14 @@ spec:
               configMapKeyRef:
                 name: log-output-config
                 key: MESSAGE
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          httpGet:
+            path: /health
+            port: 8080
       - name: timestamper
-        image: log-output-timestamper
+        image: localhost/log-output-timestamper
         imagePullPolicy: Never
         volumeMounts:
           - name: shared-dir

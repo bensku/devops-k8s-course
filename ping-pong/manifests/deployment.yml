@@ -30,3 +30,9 @@ spec:
             secretKeyRef:
               name: pingpong-db-credentials
               key: password
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          httpGet:
+            path: /health
+            port: 8080
