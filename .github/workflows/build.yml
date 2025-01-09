@@ -1,0 +1,63 @@
+name: Build and release
+
+on: push
+
+env:
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+  GKE_CLUSTER: gke-learning
+  GKE_ZONE: europe-north1-b
+  IMAGE_REPO: europe-north1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/todo-app
+
+jobs:
+  build:
+    name: Build images
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GKE_SA_KEY }}
+      - name: 'Set up Cloud SDK'
+        uses: google-github-actions/setup-gcloud@v2
+      - name: Configure Docker for push access
+        run: gcloud --quiet auth configure-docker
+      - name: Build images
+        run: |
+          docker build --tag "$IMAGE_REPO/todo-app:${{ github.sha }}" todo-app
+          docker build --tag "$IMAGE_REPO/todo-backend:${{ github.sha }}" todo-app/backend
+      - name: Push images
+        run: |
+          docker push "$IMAGE_REPO/todo-app:${{ github.sha }}"
+          docker push "$IMAGE_REPO/todo-backend:${{ github.sha }}"
+  deploy:
+    name: Deploy to GKE
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Login to GCP
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GKE_SA_KEY }}
+      - name: 'Set up Cloud SDK'
+        uses: google-github-actions/setup-gcloud@v2
+      - name: 'Get GKE credentials'
+        uses: 'google-github-actions/get-gke-credentials@v2'
+        with:
+          cluster_name: '${{ env.GKE_CLUSTER }}'
+          project_id: '${{ env.PROJECT_ID }}'
+          location: '${{ env.GKE_ZONE }}'
+      - name: Deploy to GKE
+        env:
+          NAMESPACE: ${{ github.head_ref || github.ref_name }}
+          IMAGE_TAG : ${{ github.sha }}
+        run: |
+          kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+          kubectl get secret todo-db-credentials -oyaml | kubectl --namespace $NAMESPACE apply -f -
+          for f in todo-app/manifests/*.yml; do
+            envsubst < $f | kubectl apply -f -
+          done

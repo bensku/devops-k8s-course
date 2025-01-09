@@ -2,12 +2,14 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: todo-app
-  namespace: todo-app
+  namespace: $NAMESPACE
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: todo-app
+  strategy:
+    type: Recreate # We have RWO volume, this is simplest to "fix" it
   template:
     metadata:
       labels:
@@ -19,13 +21,13 @@ spec:
             claimName: todo-cache
       containers:
       - name: todo-app
-        image: localhost/todo-app
+        image: $IMAGE_REPO/todo-app:$IMAGE_TAG
         imagePullPolicy: Never
         volumeMounts:
           - name: todo-cache
             mountPath: /var/cache
       - name: todo-backend
-        image: localhost/todo-backend
+        image: $IMAGE_REPO/todo-backend:$IMAGE_TAG
         imagePullPolicy: Never
         env:
         - name: DB_PASSWORD
