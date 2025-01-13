@@ -5,7 +5,7 @@ on: push
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
   GKE_CLUSTER: gke-learning
-  GKE_ZONE: europe-north1-b
+  GKE_ZONE: europe-north1-a
   IMAGE_REPO: europe-north1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/todo-app
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: google-github-actions/setup-gcloud@v2
       - name: Configure Docker for push access
-        run: gcloud --quiet auth configure-docker
+        run: gcloud --quiet auth configure-docker europe-north1-docker.pkg.dev
       - name: Build images
         run: |
           docker build --tag "$IMAGE_REPO/todo-app:${{ github.sha }}" todo-app
@@ -35,6 +35,7 @@ jobs:
   deploy:
     name: Deploy to GKE
     runs-on: ubuntu-latest
+    needs: build
 
     steps:
       - name: Checkout
@@ -57,7 +58,7 @@ jobs:
           IMAGE_TAG : ${{ github.sha }}
         run: |
           kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
-          kubectl get secret todo-db-credentials -oyaml | kubectl --namespace $NAMESPACE apply -f -
+          kubectl get secret todo-db-credentials -oyaml | grep -v '^\s*namespace:\s' | kubectl --namespace $NAMESPACE apply -f -
           for f in todo-app/manifests/*.yml; do
             envsubst < $f | kubectl apply -f -
           done
