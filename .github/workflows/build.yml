@@ -58,6 +58,7 @@ jobs:
           IMAGE_TAG : ${{ github.sha }}
         run: |
           kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
+          kubectl --namespace master delete secret todo-db-credentials || true
           kubectl get secret todo-db-credentials -oyaml | grep -v '^\s*namespace:\s' | kubectl --namespace $NAMESPACE apply -f -
           for f in todo-app/manifests/*.yml; do
             envsubst < $f | kubectl apply -f -
