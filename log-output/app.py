@@ -20,7 +20,7 @@ def read_time():
         return f.read()
 
 def read_ping_count():
-    res = requests.get('http://ping-pong:1234/count')
+    res = requests.get('http://ping-pong/count')
     return res.json()
 
 def update_status():
@@ -36,7 +36,7 @@ def update_status():
 
 threading.Thread(target=update_status).start()
 
-@app.get("/status")
+@app.get('/status')
 def read_root():
     return {'time': read_time(), 'status': random_str, 'pingcount': int(read_ping_count())}
 
@@ -49,3 +49,7 @@ def health():
     except Exception as e:
         print('Health check failed:', e)
         raise HTTPException(status_code=500, detail={'status': 'red'})
+
+@app.get('/')
+def root():
+    return {}

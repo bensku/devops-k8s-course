@@ -47,3 +47,7 @@ def health():
     except Exception as e:
         print('Health check failed:', e)
         raise HTTPException(status_code=500, detail={'status': 'red'})
+
+@app.get('/')
+def root():
+    return {}

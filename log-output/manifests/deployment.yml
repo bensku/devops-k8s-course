@@ -27,8 +27,8 @@ spec:
                 path: information.txt
       containers:
       - name: log-output
-        image: localhost/log-output
-        imagePullPolicy: Never
+        image: europe-north1-docker.pkg.dev/benjami-lab/exercise-apps/log-output
+        imagePullPolicy: Always
         volumeMounts:
           - name: shared-dir
             mountPath: /var/shared
@@ -49,8 +49,8 @@ spec:
             path: /health
             port: 8080
       - name: timestamper
-        image: localhost/log-output-timestamper
-        imagePullPolicy: Never
+        image: europe-north1-docker.pkg.dev/benjami-lab/exercise-apps/log-output-timestamper
+        imagePullPolicy: Always
         volumeMounts:
           - name: shared-dir
             mountPath: /var/shared
