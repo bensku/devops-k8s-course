@@ -6,7 +6,7 @@ env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
   GCP_REGION: europe-north1
   GKE_CLUSTER: gke-learning
-  GKE_ZONE: europe-north1-b
+  GKE_ZONE: europe-north1-a
 
 jobs:
   delete-env:
