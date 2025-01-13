@@ -26,4 +26,6 @@ jobs:
           project_id: '${{ env.PROJECT_ID }}'
           location: '${{ env.GKE_ZONE }}'
       - name: Delete environment resources
-        run: kubectl --namespace ${{ github.ref }} delete all --all
+        run: |
+          GIT_BRANCH=$(echo "${{ github.event.ref }}" | sed -e "s#refs/heads/##g")
+          kubectl --namespace $GIT_BRANCH delete all --all
