@@ -28,10 +28,12 @@ jobs:
         run: |
           docker build --tag "$IMAGE_REPO/todo-app:${{ github.sha }}" todo-app
           docker build --tag "$IMAGE_REPO/todo-backend:${{ github.sha }}" todo-app/backend
+          docker build --tag "$IMAGE_REPO/db-backup:${{ github.sha }}" todo-app/db-backup
       - name: Push images
         run: |
           docker push "$IMAGE_REPO/todo-app:${{ github.sha }}"
           docker push "$IMAGE_REPO/todo-backend:${{ github.sha }}"
+          docker push "$IMAGE_REPO/db-backup:${{ github.sha }}"
   deploy:
     name: Deploy to GKE
     runs-on: ubuntu-latest

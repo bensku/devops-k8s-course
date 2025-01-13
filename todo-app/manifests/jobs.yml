@@ -17,3 +17,33 @@ spec:
             - -c
             - 'curl --fail -XPOST -H "Content-Type: application/json" --data "{\"text\": \"Read $(curl -Ls -w %{url_effective} -o /dev/null https://en.wikipedia.org/wiki/Special:Random)\"}" http://todo-app:8081/todos'
           restartPolicy: OnFailure
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: daily-db-backup
+  namespace: $NAMESPACE
+spec:
+  schedule: "0 2 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          nodeSelector:
+            # Make sure that the pod can use GKE workload identity
+            iam.gke.io/gke-metadata-server-enabled: "true"
+          serviceAccountName: backup-account
+          containers:
+          - name: main
+            image: $IMAGE_REPO/db-backup:$IMAGE_TAG
+            env:
+              - name: DB_HOST
+                value: todo-db-svc
+              - name: DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: todo-db-credentials
+                    key: password
+              - name: BACKUP_TARGET
+                value: benjami-todo-app-backups
+          restartPolicy: OnFailure
