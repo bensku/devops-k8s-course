@@ -19,8 +19,8 @@ spec:
       #       claimName: ping-count
       containers:
       - name: ping-pong
-        image: localhost/ping-pong
-        imagePullPolicy: Never
+        image: europe-north1-docker.pkg.dev/benjami-lab/exercise-apps/ping-pong
+        imagePullPolicy: Always
         # volumeMounts:
         #   - name: ping-count
         #     mountPath: /var/ping-count
