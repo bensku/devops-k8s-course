@@ -22,13 +22,13 @@ spec:
       containers:
       - name: todo-app
         image: $IMAGE_REPO/todo-app:$IMAGE_TAG
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         volumeMounts:
           - name: todo-cache
             mountPath: /var/cache
       - name: todo-backend
         image: $IMAGE_REPO/todo-backend:$IMAGE_TAG
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         env:
         - name: DB_PASSWORD
           valueFrom:

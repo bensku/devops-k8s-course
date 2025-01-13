@@ -37,3 +37,7 @@ def add_todo(todo: Todo):
             cur.execute('INSERT INTO todos (text) VALUES (%s)', (todo.text,))
             conn.commit()
     print('Todo added:', todo.text)
+
+@app.get('/')
+def root():
+    return {}
