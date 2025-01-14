@@ -30,3 +30,9 @@ human-provided support that can help you.
 All in all, if there is money on line, I'd *usually* use a managed database.
 For hobby projects where I don't care about availability (or pay myself for my time),
 self-hosting is the way to go.
+
+## Exercise 4.03: Prometheus query
+```
+count(kube_pod_info{namespace="prometheus", created_by_kind="StatefulSet"})
+``
+
