@@ -15,6 +15,9 @@ spec:
       - pause:
           duration: 30s
       - setWeight: 50
+      - analysis:
+          templates:
+          - templateName: cpu-usage
       - pause:
           duration: 30s
   template:
