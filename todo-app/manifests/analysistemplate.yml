@@ -7,7 +7,7 @@ spec:
   metrics:
   - name: cpu-usage
     initialDelay: 2m
-    successCondition: result < 0.0001
+    successCondition: result[0] < 0.5
     provider:
       prometheus:
         address: http://kube-prometheus-stack-1736-prometheus.prometheus.svc.cluster.local:9090
