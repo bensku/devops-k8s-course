@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: restart-rate-backend
+  namespace: $NAMESPACE
+spec:
+  metrics:
+  - name: restart-rate
+    initialDelay: 2m
+    successCondition: result < 0.0001
+    provider:
+      prometheus:
+        address: http://kube-prometheus-stack-1736-prometheus.prometheus.svc.cluster.local:9090
+        query: |
+          sum(rate(container_cpu_usage_seconds_total{namespace="$NAMESPACE"}[2m]))
