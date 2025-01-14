@@ -26,6 +26,13 @@ spec:
         volumeMounts:
           - name: todo-cache
             mountPath: /var/cache
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
       - name: todo-backend
         image: $IMAGE_REPO/todo-backend:$IMAGE_TAG
         imagePullPolicy: Always
@@ -35,3 +42,10 @@ spec:
             secretKeyRef:
               name: todo-db-credentials
               key: password
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
