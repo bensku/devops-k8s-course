@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI, Request, HTTPException
 import psycopg
 
-conninfo = psycopg.conninfo.make_conninfo(dbname='postgres', user='postgres', host='todo-db-svc', password=os.environ['DB_PASSWORD'].replace('\n', ''))
+conninfo = psycopg.conninfo.make_conninfo(dbname='postgres', user='postgres', host='todo-db-svc-', password=os.environ['DB_PASSWORD'].replace('\n', ''))
 with psycopg.connect(conninfo) as conn:
     with conn.cursor() as cur:
         cur.execute('''CREATE TABLE IF NOT EXISTS todos (
