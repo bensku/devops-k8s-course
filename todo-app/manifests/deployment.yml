@@ -33,6 +33,18 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "500m"
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          httpGet:
+            path: /health
+            port: 8080
+        livenessProbe:
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          httpGet:
+            path: /health
+            port: 8080
       - name: todo-backend
         image: $IMAGE_REPO/todo-backend:$IMAGE_TAG
         imagePullPolicy: Always
@@ -49,3 +61,15 @@ spec:
           limits:
             memory: "256Mi"
             cpu: "500m"
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          httpGet:
+            path: /health
+            port: 8081
+        livenessProbe:
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          httpGet:
+            path: /health
+            port: 8081

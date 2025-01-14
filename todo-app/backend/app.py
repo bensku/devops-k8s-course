@@ -38,6 +38,17 @@ def add_todo(todo: Todo):
             conn.commit()
     print('Todo added:', todo.text)
 
+@app.get('/health')
+def health_check():
+    try:
+        with psycopg.connect(conninfo) as conn:
+            with conn.cursor() as cur:
+                cur.execute('SELECT 1')
+        return {'status': 'healthy'}
+    except Exception as e:
+        print('Health check failed:', e)
+        raise HTTPException(status_code=500, detail='Database connection failed')
+
 @app.get('/')
 def root():
     return {}
